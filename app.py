@@ -91,17 +91,17 @@ places = [
 st.sidebar.title("📌 Navigation")
 page = st.sidebar.radio("Go to:", ["📖 Guidebook & Explorer", "🤖 AI Concierge", "🗣️ Kinyarwanda Helper"])
 
-# --- GUIDEBOOK & EXPLORER PAGE ---# --- GUIDEBOOK & EXPLORER PAGE ---
+# --- GUIDEBOOK & EXPLORER PAGE ---
 if page == "📖 Guidebook & Explorer":
     st.title("🇷🇼 Welcome to Rwanda")
     st.header("Interactive Guidebook & Place Search")
     st.markdown("---")
 
-    # Section 1: AI-Powered Place Explorer & Custom Description
+    # Section 1: Professional AI-Powered Search & Live Google Map
     st.subheader("🔍 Search Any Specific Place or Business in Rwanda")
     custom_search = st.text_input(
         "Type any restaurant, hotel, supermarket, park, or landmark:",
-        value="Radisson Blu Hotel Kigali"
+        value="CHIC Building Kigali"
     )
 
     if custom_search:
@@ -109,46 +109,60 @@ if page == "📖 Guidebook & Explorer":
         maps_search_url = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
         embed_map_url = f"https://maps.google.com/maps?q={encoded_query}&t=&z=14&ie=UTF8&iwloc=&output=embed"
 
-        col_left, col_right = st.columns([1.2, 1])
+        col_left, col_right = st.columns([1.3, 1])
 
         with col_left:
             with st.container(border=True):
-                st.markdown(f"### 📍 {custom_search.title()}")
+                st.markdown(f"## 📍 {custom_search.title()}")
+                st.caption("🏷️ Verified Destination · 📍 Rwanda")
+                st.markdown("---")
 
-                # AI Generated Description
+                # AI Generated Structured Profile
                 if api_key:
                     try:
                         genai.configure(api_key=api_key)
                         model = genai.GenerativeModel("gemini-1.5-flash")
                         
                         prompt = f"""
-                        Provide a brief, engaging overview of '{custom_search}' in Rwanda.
-                        Structure it clearly:
-                        - **Overview:** Briefly explain what this spot is and what makes it unique.
-                        - **Highlights:** List 2 key features or reasons to visit.
-                        Keep it concise and appealing for a traveler.
+                        Create a professional overview for '{custom_search}' in Rwanda.
+                        
+                        Format the response using Markdown:
+                        ### 🏢 Overview
+                        Write 2 clear sentences describing what this place is and what makes it notable for visitors or tourists.
+
+                        ### ✨ Key Highlights & Features
+                        - **Feature 1:** Bold feature title - quick detail.
+                        - **Feature 2:** Bold feature title - quick detail.
+                        - **Best For:** Who or what activity this location serves best.
+
+                        ### 💡 Traveler Tip
+                        Add a practical insider tip for visiting (e.g., parking, best hours, or what to bring).
                         """
                         
-                        with st.spinner("Loading description..."):
+                        with st.spinner("Generating destination profile..."):
                             ai_response = model.generate_content(prompt)
                             st.markdown(ai_response.text)
-                    except Exception:
-                        st.write(f"Explore details, guest reviews, and opening hours for **{custom_search}**.")
+                    except Exception as e:
+                        st.info(f"Explore opening hours, photos, and reviews for **{custom_search}** directly on Google Maps.")
                 else:
-                    st.info("Enter your Gemini API Key in the sidebar to generate custom venue details.")
+                    st.info("Enter your Gemini API Key in the sidebar to view full AI venue profiles.")
 
                 st.markdown("---")
-                st.write("👉 **Would you like to visit here or check distance and turn-by-turn directions from your location?** Click the button below to launch Google Maps:")
+                st.markdown("#### 🗺️ Ready to Visit?")
+                st.write("Get real-time directions, traffic estimates, and turn-by-turn navigation:")
                 
                 st.link_button(
-                    f"🗺️ Get Directions & Open in Google Maps", 
+                    f"🚀 Open {custom_search.title()} in Google Maps", 
                     maps_search_url, 
                     use_container_width=True,
                     type="primary"
                 )
 
         with col_right:
-            st.components.v1.iframe(embed_map_url, height=380, scrolling=True)
+            with st.container(border=True):
+                st.markdown("#### 🗺️ Location Preview")
+                st.components.v1.iframe(embed_map_url, height=450, scrolling=True)
+
     st.markdown("---")
 
     # Section 2: Interactive Country Map & Filtering
@@ -172,7 +186,6 @@ if page == "📖 Guidebook & Explorer":
             import folium
             from streamlit_folium import st_folium
 
-            # Zoom level 10 locks view directly onto Rwanda
             m = folium.Map(location=[-1.94, 29.87], zoom_start=10, tiles="OpenStreetMap")
 
             for place in filtered_places:
