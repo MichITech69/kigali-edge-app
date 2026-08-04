@@ -22,69 +22,88 @@ with st.sidebar:
 api_key = api_key_input or env_key
 
 # --- GUIDEBOOK DATA ---
+# --- GUIDEBOOK DATA WITH MAP COORDINATES ---
 places = [
     {
         "title": "Kigali Genocide Memorial",
         "category": "Culture & History",
         "neighborhood": "Gisozi",
         "desc": "A deeply moving site honoring victims and offering education on peace-building.",
-        "tip": "Plan for 1.5 - 2 hours"
+        "tip": "Plan for 1.5 - 2 hours",
+        "lat": -1.9306,
+        "lon": 30.0606
     },
     {
         "title": "Inema Arts Center",
         "category": "Culture & History",
         "neighborhood": "Kacyiru",
         "desc": "Vibrant contemporary African art center with live painting and events.",
-        "tip": "Great happy hour on Thursdays"
+        "tip": "Great happy hour on Thursdays",
+        "lat": -1.9365,
+        "lon": 30.0894
     },
     {
         "title": "Niyo Arts Gallery",
         "category": "Culture & History",
         "neighborhood": "Kacyiru",
         "desc": "Social impact art space supporting local youth through creative programs.",
-        "tip": "Traditional drumming displays"
+        "tip": "Traditional drumming displays",
+        "lat": -1.9328,
+        "lon": 30.0877
     },
     {
         "title": "Question Coffee Cafe",
         "category": "Coffee & Dining",
         "neighborhood": "Gishushu",
         "desc": "Specialty Rwandan coffee supporting women coffee farmers across the country.",
-        "tip": "Try the iced pour-over"
+        "tip": "Try the iced pour-over",
+        "lat": -1.9512,
+        "lon": 30.0965
     },
     {
         "title": "Inzora Rooftop Cafe",
         "category": "Coffee & Dining",
         "neighborhood": "Kacyiru",
         "desc": "Cozy rooftop spot with amazing sunset views over the hills of Kigali.",
-        "tip": "Perfect spot for remote work"
+        "tip": "Perfect spot for remote work",
+        "lat": -1.9421,
+        "lon": 30.0883
     },
     {
         "title": "Heaven Restaurant",
         "category": "Coffee & Dining",
         "neighborhood": "Kiyovu",
         "desc": "Upscale modern African cuisine with fresh organic local ingredients.",
-        "tip": "Great cocktail menu"
+        "tip": "Great cocktail menu",
+        "lat": -1.9567,
+        "lon": 30.0642
     },
     {
         "title": "Kimironko Market",
         "category": "Shopping & Markets",
         "neighborhood": "Kimironko",
         "desc": "The largest and most vibrant local market for fabrics, produce, and crafts.",
-        "tip": "Tailors can make custom clothes in hours"
+        "tip": "Tailors can make custom clothes in hours",
+        "lat": -1.9447,
+        "lon": 30.1256
     },
     {
         "title": "Caplaki Crafts Village",
         "category": "Shopping & Markets",
         "neighborhood": "Rugunga",
         "desc": "Collection of wooden huts selling traditional Rwandan crafts and carvings.",
-        "tip": "Friendly bargaining is expected"
+        "tip": "Friendly bargaining is expected",
+        "lat": -1.9628,
+        "lon": 30.0673
     },
     {
         "title": "Kigali Heights",
         "category": "Shopping & Markets",
         "neighborhood": "Kimihurura",
         "desc": "Modern shopping and commercial complex with dining, supermarkets, and cafes.",
-        "tip": "Located right next to the Convention Center"
+        "tip": "Located right next to the Convention Center",
+        "lat": -1.9536,
+        "lon": 30.0931
     }
 ]
 
@@ -110,7 +129,13 @@ if page == "📖 Digital Guidebook":
         filtered_places = [p for p in filtered_places if search_query.lower() in p["title"].lower() or search_query.lower() in p["neighborhood"].lower()]
 
     st.write("")
-
+# Map View
+    with st.expander("🗺️ View Interactive Map of Spots", expanded=True):
+        if filtered_places:
+            map_data = [{"lat": p["lat"], "lon": p["lon"]} for p in filtered_places]
+            st.map(map_data)
+        else:
+            st.info("No locations on map for current filter.")
     # Display Cards in Grid
     if not filtered_places:
         st.info("No places found matching your search.")
