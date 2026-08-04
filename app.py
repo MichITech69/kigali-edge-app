@@ -1,29 +1,21 @@
 import os
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Load API key if present in .env
+# --- INITIAL SETUP ---
 load_dotenv()
-env_key = os.getenv("GEMINI_API_KEY")
+st.set_page_config(page_title="RW Welcome to Kigali", page_icon="🇷🇼", layout="wide")
 
-st.set_page_config(page_title="Kigali Edge AI", page_icon="🇷🇼", layout="wide")
+# --- API KEY HANDLING ---
+env_key = os.getenv("GEMINI_API_KEY", "")
 
-# Sidebar Navigation
-st.sidebar.title("📌 Navigation")
-page = st.sidebar.radio("Go to:", ["📖 Digital Guidebook", "🤖 AI Assistant", "🗣️ Kinyarwanda Helper"])
-
-# Optional API key override in sidebar
 with st.sidebar:
-    st.markdown("---")
-    st.subheader("Settings")
-    api_key_input = st.text_input("Gemini API Key", value=env_key if env_key else "", type="password")
+    st.header("Settings")
+    api_key_input = st.text_input("Gemini API Key", value=env_key, type="password")
 
 api_key = api_key_input or env_key
 
-# --- GUIDEBOOK DATA ---
-# --- GUIDEBOOK DATA WITH MAP COORDINATES ---
-places = # --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
 # --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
 places = [
     {
@@ -118,95 +110,88 @@ places = [
     }
 ]
 
-# --- PAGE 1: DIGITAL GUIDEBOOK ---
+# --- NAVIGATION ---
+st.sidebar.title("📌 Navigation")
+page = st.sidebar.radio("Go to:", ["📖 Digital Guidebook", "🤖 AI Assistant", "🗣️ Kinyarwanda Helper"])
+
+# --- DIGITAL GUIDEBOOK PAGE ---
 if page == "📖 Digital Guidebook":
     st.title("🇷🇼 Welcome to Kigali")
-    st.subheader("Your Curated Interactive City Guide")
+    st.header("Your Curated Interactive City Guide")
     st.write("Explore top spots across the city with quick highlights and local tips!")
     st.markdown("---")
 
-    # Filter Bar
-    col_filter1, col_filter2 = st.columns(2)
-    with col_filter1:
-        selected_cat = st.selectbox("Filter by Category", ["All Categories", "Culture & History", "Coffee & Dining", "Shopping & Markets"])
-    with col_filter2:
-        search_query = st.text_input("Search by spot name or neighborhood", "")
+    col_cat, col_search = st.columns(2)
+    with col_cat:
+        categories = ["All Categories"] + sorted(list(set(p["category"] for p in places)))
+        selected_cat = st.selectbox("Filter by Category", categories)
+    with col_search:
+        search_query = st.text_input("Search by spot name or neighborhood")
 
-    # Filter Logic
     filtered_places = places
     if selected_cat != "All Categories":
         filtered_places = [p for p in filtered_places if p["category"] == selected_cat]
     if search_query:
         filtered_places = [p for p in filtered_places if search_query.lower() in p["title"].lower() or search_query.lower() in p["neighborhood"].lower()]
 
-    st.write("")
-# Map View
+    # Map View
     with st.expander("🗺️ View Interactive Map of Spots", expanded=True):
         if filtered_places:
             map_data = [{"lat": p["lat"], "lon": p["lon"]} for p in filtered_places]
             st.map(map_data)
         else:
             st.info("No locations on map for current filter.")
-    # Display Cards in Grid
-    if not filtered_places:
-        st.info("No places found matching your search.")
-    else:
-        # FIND THIS BLOCK IN YOUR CODE:
-cols = st.columns(3)
-        for index, place in enumerate(filtered_places):
-            col = cols[index % 3]
-            with col:
-                with st.container(border=True):
-                    st.image(place["image"], use_container_width=True)
-                    st.markdown(f"#### {place['title']}")
-                    st.caption(f"📁 {place['category']} | 📍 {place['neighborhood']}")
-                    st.write(place["desc"])
-                    st.caption(f"💡 **Tip:** {place['tip']}")
 
-# --- PAGE 2: AI ASSISTANT ---
+    st.write("")
+
+    cols = st.columns(3)
+    for index, place in enumerate(filtered_places):
+        col = cols[index % 3]
+        with col:
+            with st.container(border=True):
+                st.image(place["image"], use_container_width=True)
+                st.markdown(f"#### {place['title']}")
+                st.caption(f"📁 {place['category']} | 📍 {place['neighborhood']}")
+                st.write(place["desc"])
+                st.caption(f"💡 **Tip:** {place['tip']}")
+
+# --- AI ASSISTANT PAGE ---
 elif page == "🤖 AI Assistant":
-    st.title("🤖 Kigali AI Assistant")
-    st.write("Ask anything about Kigali—travel spots, local tips, or general advice!")
+    st.title("🤖 Kigali Travel Concierge")
+    st.write("Ask anything about traveling, transport, dining, or culture in Kigali!")
+    st.markdown("---")
 
-    # Session State for User Prompt
-    if "prompt_input" not in st.session_state:
-        st.session_state["prompt_input"] = ""
+    if not api_key:
+        st.warning("Please enter your Gemini API Key in the sidebar or setup your .env file to use the AI assistant.")
+    else:
+        try:
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel("gemini-1.5-flash")
 
-    st.markdown("##### 💡 Quick Prompts:")
-    btn_col1, btn_col2, btn_col3 = st.columns(3)
-    
-    with btn_col1:
-        if st.button("☕ Best quiet cafes for remote work?"):
-            st.session_state["prompt_input"] = "What are the best quiet cafes for remote work in Kigali?"
-    with btn_col2:
-        if st.button("🍲 Popular local Rwandan dishes to try?"):
-            st.session_state["prompt_input"] = "What are popular local Rwandan dishes and where can I try them in Kigali?"
-    with btn_col3:
-        if st.button("🚕 Best way to get around Kigali?"):
-            st.session_state["prompt_input"] = "What is the safest and best way to get around Kigali as a visitor?"
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
 
-    user_query = st.text_input("What would you like to know about Kigali?", value=st.session_state["prompt_input"])
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
-    if st.button("Ask AI", type="primary"):
-        if not api_key:
-            st.warning("Please enter your Gemini API Key in the sidebar first!")
-        elif not user_query:
-            st.warning("Please type a question first.")
-        else:
-            try:
-                client = genai.Client(api_key=api_key)
-                with st.spinner("Thinking..."):
-                    prompt = f"You are an expert local Kigali tour guide and concierge. Answer helpful and concise: {user_query}"
-                    response = client.models.generate_content(
-                        model="gemini-3.5-flash",
-                        contents=prompt,
-                    )
-                    st.success("Response:")
-                    st.write(response.text)
-            except Exception as e:
-                st.error(f"Error: {e}")
-                # --- KINYARWANDA HELPER PAGE ---
-if page == "🗣️ Kinyarwanda Helper":
+            if user_prompt := st.chat_input("Ask a question about Kigali..."):
+                st.session_state.messages.append({"role": "user", "content": user_prompt})
+                with st.chat_message("user"):
+                    st.markdown(user_prompt)
+
+                with st.chat_message("assistant"):
+                    with st.spinner("Thinking..."):
+                        system_context = "You are an expert local guide for Kigali, Rwanda. Provide helpful, accurate, and welcoming advice."
+                        full_prompt = f"{system_context}\n\nUser Question: {user_prompt}"
+                        response = model.generate_content(full_prompt)
+                        st.markdown(response.text)
+                        st.session_state.messages.append({"role": "assistant", "content": response.text})
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+# --- KINYARWANDA HELPER PAGE ---
+elif page == "🗣️ Kinyarwanda Helper":
     st.title("🗣️ Kinyarwanda Phrasebook")
     st.write("Essential phrases to connect with locals in Kigali!")
     st.markdown("---")
