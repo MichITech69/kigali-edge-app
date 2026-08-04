@@ -11,7 +11,7 @@ st.set_page_config(page_title="Kigali Edge AI", page_icon="🇷🇼", layout="wi
 
 # Sidebar Navigation
 st.sidebar.title("📌 Navigation")
-page = st.sidebar.radio("Go to:", ["📖 Digital Guidebook", "🤖 AI Assistant"])
+page = st.sidebar.radio("Go to:", ["📖 Digital Guidebook", "🤖 AI Assistant", "🗣️ Kinyarwanda Helper"])
 
 # Optional API key override in sidebar
 with st.sidebar:
@@ -205,3 +205,29 @@ elif page == "🤖 AI Assistant":
                     st.write(response.text)
             except Exception as e:
                 st.error(f"Error: {e}")
+                # --- KINYARWANDA HELPER PAGE ---
+if page == "🗣️ Kinyarwanda Helper":
+    st.title("🗣️ Kinyarwanda Phrasebook")
+    st.write("Essential phrases to connect with locals in Kigali!")
+    st.markdown("---")
+
+    phrases = [
+        {"english": "Hello / Good day", "kinyarwanda": "Muraho", "pronunciation": "Moo-rah-ho", "usage": "General greeting anytime"},
+        {"english": "Thank you", "kinyarwanda": "Murakoze", "pronunciation": "Moo-rah-koh-zeh", "usage": "Showing gratitude"},
+        {"english": "How are you?", "kinyarwanda": "Amakuru?", "pronunciation": "Ah-mah-koo-roo", "usage": "Friendly check-in"},
+        {"english": "I am fine / Good", "kinyarwanda": "Ni meza", "pronunciation": "Nee meh-zah", "usage": "Response to Amakuru"},
+        {"english": "Yes", "kinyarwanda": "Yego", "pronunciation": "Yeh-go", "usage": "Affirmation"},
+        {"english": "No", "kinyarwanda": "Oya", "pronunciation": "Oh-yah", "usage": "Negation"},
+        {"english": "How much is this?", "kinyarwanda": "Ni angahe?", "pronunciation": "Nee ahn-gah-heh", "usage": "At market or shops"},
+        {"english": "Goodbye", "kinyarwanda": "Mwirirwe", "pronunciation": "Mwee-reer-weh", "usage": "Daytime farewell"}
+    ]
+
+    for p in phrases:
+        with st.container(border=True):
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                st.subheader(p["kinyarwanda"])
+                st.caption(f"🗣️ Pronounced: *{p['pronunciation']}*")
+            with col2:
+                st.write(f"**English:** {p['english']}")
+                st.caption(f"💡 Context: {p['usage']}")
