@@ -26,7 +26,7 @@ places = [
         "tip": "Plan for 1.5 - 2 hours",
         "lat": -1.9306,
         "lon": 30.0606,
-        "image": "https://images.unsplash.com/photo-1572252821143-035243859812?w=600"
+        "image": "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600"
     },
     {
         "title": "Inema Arts Center",
