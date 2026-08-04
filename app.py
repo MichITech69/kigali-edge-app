@@ -1,11 +1,12 @@
 import os
+import urllib.parse
 import streamlit as st
 import google.generativeai as genai
 from dotenv import load_dotenv
 
 # --- INITIAL SETUP ---
 load_dotenv()
-st.set_page_config(page_title="RW Welcome to Kigali", page_icon="🇷🇼", layout="wide")
+st.set_page_config(page_title="RW Welcome to Rwanda", page_icon="🇷🇼", layout="wide")
 
 # --- API KEY HANDLING ---
 env_key = os.getenv("GEMINI_API_KEY", "")
@@ -16,170 +17,48 @@ with st.sidebar:
 
 api_key = api_key_input or env_key
 
-# --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
-places = [
-    # --- KIGALI ---
-    {
-        "title": "Kigali Genocide Memorial",
-        "category": "Culture & History",
-        "neighborhood": "Gisozi, Kigali",
-        "desc": "A deeply moving site honoring victims and offering education on peace-building.",
-        "tip": "Plan for 1.5 - 2 hours",
-        "lat": -1.9306,
-        "lon": 30.0606,
-        "image": "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600"
-    },
-    {
-        "title": "Inema Arts Center",
-        "category": "Culture & History",
-        "neighborhood": "Kacyiru, Kigali",
-        "desc": "Vibrant contemporary African art center with live painting and events.",
-        "tip": "Great happy hour on Thursdays",
-        "lat": -1.9365,
-        "lon": 30.0894,
-        "image": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600"
-    },
-    # --- NORTHERN PROVINCE ---
-    {
-        "title": "Volcanoes National Park",
-        "category": "Nature & Wildlife",
-        "neighborhood": "Musanze",
-        "desc": "Home to the endangered mountain gorillas and majestic Virunga volcanoes.",
-        "tip": "Book gorilla trekking permits well in advance",
-        "lat": -1.4800,
-        "lon": 29.5300,
-        "image": "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600"
-    },
-    # --- WESTERN PROVINCE ---
-    {
-        "title": "Lake Kivu Boardwalk & Beaches",
-        "category": "Nature & Wildlife",
-        "neighborhood": "Rubavu / Gisenyi",
-        "desc": "Scenic lakeside resort town perfect for boat tours, relaxation, and water sports.",
-        "tip": "Great evening sunset views over Lake Kivu",
-        "lat": -1.7003,
-        "lon": 29.2562,
-        "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
-    },
-    # --- SOUTHERN PROVINCE ---
-    {
-        "title": "King's Palace Museum",
-        "category": "Culture & History",
-        "neighborhood": "Nyanza",
-        "desc": "Traditional royal residence showcasing royal Inyambo long-horned cattle.",
-        "tip": "Listen to traditional praise singers tending to the cattle",
-        "lat": -2.3510,
-        "lon": 29.7505,
-        "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600"
-    },
-    {
-        "title": "Nyungwe National Park",
-        "category": "Nature & Wildlife",
-        "neighborhood": "Rusizi",
-        "desc": "Ancient montane rainforest featuring chimpanzees and a high-canopy walkway.",
-        "tip": "Experience the famous Canopy Walkway",
-        "lat": -2.4883,
-        "lon": 29.2314,
-        "image": "https://images.unsplash.com/photo-1511497584788-876761c119ef?w=600"
-    },
-    # --- EASTERN PROVINCE ---
-    {
-        "title": "Akagera National Park",
-        "category": "Nature & Wildlife",
-        "neighborhood": "Kayonza",
-        "desc": "Rwanda's Big Five savanna park with lions, elephants, rhinos, and lakes.",
-        "tip": "Take a boat safari on Lake Ihema",
-        "lat": -1.8800,
-        "lon": 30.7000,
-        "image": "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=600"
-    }
-]
-
 # --- NAVIGATION ---
 st.sidebar.title("📌 Navigation")
-page = st.sidebar.radio("Go to:", ["📖 Digital Guidebook", "🤖 AI Assistant", "🗣️ Kinyarwanda Helper"])
+page = st.sidebar.radio("Go to:", ["🗺️ Google Maps Explorer", "🤖 AI Concierge", "🗣️ Kinyarwanda Helper"])
 
-# --- DIGITAL GUIDEBOOK PAGE ---
-if page == "📖 Digital Guidebook":
-    st.title("🇷🇼 Welcome to Kigali")
-    st.header("Your Curated Interactive City Guide")
-    st.write("Explore top spots across the city with quick highlights and local tips!")
-    st.markdown("---")
+# --- GOOGLE MAPS SEARCH PAGE ---
+if page == "🗺️ Google Maps Explorer":
+    st.title("🇷🇼 Rwanda Place & Itinerary Explorer")
+    st.write("Search for **any venue, hotel, restaurant, market, or stadium** across Rwanda!")
 
-    col_cat, col_search = st.columns(2)
-    with col_cat:
-        categories = ["All Categories"] + sorted(list(set(p["category"] for p in places)))
-        selected_cat = st.selectbox("Filter by Category", categories)
-    with col_search:
-        search_query = st.text_input("Search by spot name or neighborhood")
+    # Search Bar Input
+    search_query = st.text_input("🔍 Search anything (e.g. Simba Supermarket, Kigali Heights, Musanze Hotel, Nyungwe)", value="Simba Supermarket Kigali")
 
-    filtered_places = places
-    if selected_cat != "All Categories":
-        filtered_places = [p for p in filtered_places if p["category"] == selected_cat]
     if search_query:
-        filtered_places = [p for p in filtered_places if search_query.lower() in p["title"].lower() or search_query.lower() in p["neighborhood"].lower()]
+        encoded_query = urllib.parse.quote(search_query)
+        maps_search_url = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
+        embed_map_url = f"https://maps.google.com/maps?q={encoded_query}&t=&z=13&ie=UTF8&iwloc=&output=embed"
 
-    # Map View
-    # Map View (Interactive 3D / Pan / Zoom Map)
-    # Map View (Countrywide Interactive View)
-    # Map View (Countrywide Interactive View)
-    # Map View (Countrywide Interactive View)
-    # Map View (Rich Interactive Explorer)
-    with st.expander("🗺️ Countrywide Travel Explorer Map", expanded=True):
-        if filtered_places:
-            import folium
-            from streamlit_folium import st_folium
+        col_left, col_right = st.columns([1, 1.2])
 
-            # Create base map centered on Rwanda
-            m = folium.Map(location=[-1.94, 29.87], zoom_start=9, tiles="OpenStreetMap")
-
-            # Add Satellite / Street view toggle
-            folium.TileLayer("cartodbpositron", name="Light Map").add_to(m)
-            folium.TileLayer(
-                tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                attr="Esri",
-                name="Satellite View"
-            ).add_to(m)
-
-            # Add markers for all spots
-            for place in filtered_places:
-                popup_html = f"""
-                <div style="width:180px;">
-                    <img src="{place['image']}" style="width:100%; border-radius:6px; margin-bottom:5px;">
-                    <b>{place['title']}</b><br>
-                    <small>📍 {place['neighborhood']}</small><br>
-                    <small>📁 {place['category']}</small>
-                </div>
-                """
-                folium.Marker(
-                    location=[place["lat"], place["lon"]],
-                    popup=folium.Popup(popup_html, max_width=200),
-                    tooltip=place["title"],
-                    icon=folium.Icon(color="red", icon="info-sign")
-                ).add_to(m)
-
-            folium.LayerControl().add_to(m)
-            st_folium(m, width="100%", height=450, returned_objects=[])
-        else:
-            st.info("No locations match current search criteria.")
+        with col_left:
+            st.subheader(f"Results for: '{search_query}'")
+            st.write("Click below to get directions, reviews, and turn-by-turn navigation directly inside Google Maps:")
             
-    st.write("")
+            # Direct Navigation Link
+            st.link_button(
+                f"📍 Open '{search_query}' in Google Maps App", 
+                maps_search_url, 
+                use_container_width=True,
+                type="primary"
+            )
 
-    cols = st.columns(3)
-    for index, place in enumerate(filtered_places):
-        col = cols[index % 3]
-        with col:
-            with st.container(border=True):
-                st.image(place["image"], use_container_width=True)
-                st.markdown(f"#### {place['title']}")
-                st.caption(f"📁 {place['category']} | 📍 {place['neighborhood']}")
-                st.write(place["desc"])
-                st.caption(f"💡 **Tip:** {place['tip']}")
+            st.info("💡 **Tip for Visitors:** Clicking the button above will launch the native Google Maps app on mobile or desktop with directions, phone numbers, and opening hours.")
+
+        with col_right:
+            st.subheader("🗺️ Live Map Preview")
+            # Embed Interactive Google Map frame
+            st.components.v1.iframe(embed_map_url, height=450, scrolling=True)
 
 # --- AI ASSISTANT PAGE ---
-elif page == "🤖 AI Assistant":
-    st.title("🤖 Kigali Travel Concierge")
-    st.write("Ask anything about traveling, transport, dining, or culture in Kigali!")
+elif page == "🤖 AI Concierge":
+    st.title("🤖 Kigali & Rwanda Travel Concierge")
+    st.write("Ask anything about traveling, transport, dining, or culture in Rwanda!")
     st.markdown("---")
 
     if not api_key:
@@ -196,14 +75,14 @@ elif page == "🤖 AI Assistant":
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
 
-            if user_prompt := st.chat_input("Ask a question about Kigali..."):
+            if user_prompt := st.chat_input("Ask a question about Rwanda..."):
                 st.session_state.messages.append({"role": "user", "content": user_prompt})
                 with st.chat_message("user"):
                     st.markdown(user_prompt)
 
                 with st.chat_message("assistant"):
                     with st.spinner("Thinking..."):
-                        system_context = "You are an expert local guide for Kigali, Rwanda. Provide helpful, accurate, and welcoming advice."
+                        system_context = "You are an expert local guide for Rwanda. Provide helpful, accurate, and welcoming advice."
                         full_prompt = f"{system_context}\n\nUser Question: {user_prompt}"
                         response = model.generate_content(full_prompt)
                         st.markdown(response.text)
@@ -214,7 +93,7 @@ elif page == "🤖 AI Assistant":
 # --- KINYARWANDA HELPER PAGE ---
 elif page == "🗣️ Kinyarwanda Helper":
     st.title("🗣️ Kinyarwanda Phrasebook")
-    st.write("Essential phrases to connect with locals in Kigali!")
+    st.write("Essential phrases to connect with locals in Rwanda!")
     st.markdown("---")
 
     phrases = [
