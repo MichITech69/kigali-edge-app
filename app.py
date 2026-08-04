@@ -91,33 +91,64 @@ places = [
 st.sidebar.title("📌 Navigation")
 page = st.sidebar.radio("Go to:", ["📖 Guidebook & Explorer", "🤖 AI Concierge", "🗣️ Kinyarwanda Helper"])
 
-# --- GUIDEBOOK & EXPLORER PAGE ---
+# --- GUIDEBOOK & EXPLORER PAGE ---# --- GUIDEBOOK & EXPLORER PAGE ---
 if page == "📖 Guidebook & Explorer":
     st.title("🇷🇼 Welcome to Rwanda")
     st.header("Interactive Guidebook & Place Search")
     st.markdown("---")
 
-    # Section 1: Custom Live Google Search
+    # Section 1: AI-Powered Place Explorer & Custom Description
     st.subheader("🔍 Search Any Specific Place or Business in Rwanda")
-    custom_search = st.text_input("Type any restaurant, hotel, supermarket, or landmark (e.g., Simba Supermarket, Kigali Heights, Hotel des Mille Collines):")
+    custom_search = st.text_input(
+        "Type any restaurant, hotel, supermarket, park, or landmark:",
+        value="Radisson Blu Hotel Kigali"
+    )
 
     if custom_search:
         encoded_query = urllib.parse.quote(f"{custom_search} Rwanda")
         maps_search_url = f"https://www.google.com/maps/search/?api=1&query={encoded_query}"
         embed_map_url = f"https://maps.google.com/maps?q={encoded_query}&t=&z=14&ie=UTF8&iwloc=&output=embed"
 
-        col_left, col_right = st.columns([1, 1.2])
-        with col_left:
-            st.success(f"Showing results for: **{custom_search}**")
-            st.link_button(
-                f"📍 Open '{custom_search}' in Google Maps App", 
-                maps_search_url, 
-                use_container_width=True,
-                type="primary"
-            )
-        with col_right:
-            st.components.v1.iframe(embed_map_url, height=350, scrolling=True)
+        col_left, col_right = st.columns([1.2, 1])
 
+        with col_left:
+            with st.container(border=True):
+                st.markdown(f"### 📍 {custom_search.title()}")
+
+                # AI Generated Description
+                if api_key:
+                    try:
+                        genai.configure(api_key=api_key)
+                        model = genai.GenerativeModel("gemini-1.5-flash")
+                        
+                        prompt = f"""
+                        Provide a brief, engaging overview of '{custom_search}' in Rwanda.
+                        Structure it clearly:
+                        - **Overview:** Briefly explain what this spot is and what makes it unique.
+                        - **Highlights:** List 2 key features or reasons to visit.
+                        Keep it concise and appealing for a traveler.
+                        """
+                        
+                        with st.spinner("Loading description..."):
+                            ai_response = model.generate_content(prompt)
+                            st.markdown(ai_response.text)
+                    except Exception:
+                        st.write(f"Explore details, guest reviews, and opening hours for **{custom_search}**.")
+                else:
+                    st.info("Enter your Gemini API Key in the sidebar to generate custom venue details.")
+
+                st.markdown("---")
+                st.write("👉 **Would you like to visit here or check distance and turn-by-turn directions from your location?** Click the button below to launch Google Maps:")
+                
+                st.link_button(
+                    f"🗺️ Get Directions & Open in Google Maps", 
+                    maps_search_url, 
+                    use_container_width=True,
+                    type="primary"
+                )
+
+        with col_right:
+            st.components.v1.iframe(embed_map_url, height=380, scrolling=True)
     st.markdown("---")
 
     # Section 2: Interactive Country Map & Filtering
@@ -141,7 +172,8 @@ if page == "📖 Guidebook & Explorer":
             import folium
             from streamlit_folium import st_folium
 
-            m = folium.Map(location=[-1.94, 29.87], zoom_start=8, tiles="OpenStreetMap")
+            # Zoom level 10 locks view directly onto Rwanda
+            m = folium.Map(location=[-1.94, 29.87], zoom_start=10, tiles="OpenStreetMap")
 
             for place in filtered_places:
                 popup_html = f"""
