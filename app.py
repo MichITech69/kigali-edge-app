@@ -122,16 +122,17 @@ if page == "📖 Digital Guidebook":
     # Map View
     # Map View (Interactive 3D / Pan / Zoom Map)
     # Map View (Countrywide Interactive View)
+    # Map View (Countrywide Interactive View)
+    # Map View (Countrywide Interactive View)
     with st.expander("🗺️ View Countrywide Interactive Map", expanded=True):
         if filtered_places:
             import pydeck as pdk
 
-            # Fixed national center for Rwanda
             view_state = pdk.ViewState(
                 latitude=-1.94,
                 longitude=29.87,
-                zoom=8.2,
-                pitch=0,
+                zoom=8,
+                pitch=0
             )
 
             layer = pdk.Layer(
@@ -139,8 +140,8 @@ if page == "📖 Digital Guidebook":
                 data=filtered_places,
                 get_position="[lon, lat]",
                 get_color="[220, 38, 38, 200]",
-                get_radius=2500,  # Larger radius so pins are visible nationally
-                pickable=True,
+                get_radius=3000,
+                pickable=True
             )
 
             st.pydeck_chart(
@@ -148,7 +149,7 @@ if page == "📖 Digital Guidebook":
                     layers=[layer],
                     initial_view_state=view_state,
                     tooltip={"text": "{title}\n📍 {neighborhood}\n📁 {category}"},
-                    map_style="mapbox://styles/mapbox/streets-v11",
+                    map_style=None
                 )
             )
         else:
