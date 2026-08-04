@@ -18,10 +18,11 @@ api_key = api_key_input or env_key
 
 # --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
 places = [
+    # --- KIGALI ---
     {
         "title": "Kigali Genocide Memorial",
         "category": "Culture & History",
-        "neighborhood": "Gisozi",
+        "neighborhood": "Gisozi, Kigali",
         "desc": "A deeply moving site honoring victims and offering education on peace-building.",
         "tip": "Plan for 1.5 - 2 hours",
         "lat": -1.9306,
@@ -31,82 +32,66 @@ places = [
     {
         "title": "Inema Arts Center",
         "category": "Culture & History",
-        "neighborhood": "Kacyiru",
+        "neighborhood": "Kacyiru, Kigali",
         "desc": "Vibrant contemporary African art center with live painting and events.",
         "tip": "Great happy hour on Thursdays",
         "lat": -1.9365,
         "lon": 30.0894,
         "image": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600"
     },
+    # --- NORTHERN PROVINCE ---
     {
-        "title": "Niyo Arts Gallery",
+        "title": "Volcanoes National Park",
+        "category": "Nature & Wildlife",
+        "neighborhood": "Musanze",
+        "desc": "Home to the endangered mountain gorillas and majestic Virunga volcanoes.",
+        "tip": "Book gorilla trekking permits well in advance",
+        "lat": -1.4800,
+        "lon": 29.5300,
+        "image": "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600"
+    },
+    # --- WESTERN PROVINCE ---
+    {
+        "title": "Lake Kivu Boardwalk & Beaches",
+        "category": "Nature & Wildlife",
+        "neighborhood": "Rubavu / Gisenyi",
+        "desc": "Scenic lakeside resort town perfect for boat tours, relaxation, and water sports.",
+        "tip": "Great evening sunset views over Lake Kivu",
+        "lat": -1.7003,
+        "lon": 29.2562,
+        "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600"
+    },
+    # --- SOUTHERN PROVINCE ---
+    {
+        "title": "King's Palace Museum",
         "category": "Culture & History",
-        "neighborhood": "Kacyiru",
-        "desc": "Social impact art space supporting local youth through creative programs.",
-        "tip": "Traditional drumming displays",
-        "lat": -1.9328,
-        "lon": 30.0877,
-        "image": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600"
-    },
-    {
-        "title": "Question Coffee Cafe",
-        "category": "Coffee & Dining",
-        "neighborhood": "Gishushu",
-        "desc": "Specialty Rwandan coffee supporting women coffee farmers across the country.",
-        "tip": "Try the iced pour-over",
-        "lat": -1.9512,
-        "lon": 30.0965,
-        "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600"
-    },
-    {
-        "title": "Inzora Rooftop Cafe",
-        "category": "Coffee & Dining",
-        "neighborhood": "Kacyiru",
-        "desc": "Cozy rooftop spot with amazing sunset views over the hills of Kigali.",
-        "tip": "Perfect spot for remote work",
-        "lat": -1.9421,
-        "lon": 30.0883,
-        "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"
-    },
-    {
-        "title": "Heaven Restaurant",
-        "category": "Coffee & Dining",
-        "neighborhood": "Kiyovu",
-        "desc": "Upscale modern African cuisine with fresh organic local ingredients.",
-        "tip": "Great cocktail menu",
-        "lat": -1.9567,
-        "lon": 30.0642,
-        "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600"
-    },
-    {
-        "title": "Kimironko Market",
-        "category": "Shopping & Markets",
-        "neighborhood": "Kimironko",
-        "desc": "The largest and most vibrant local market for fabrics, produce, and crafts.",
-        "tip": "Tailors can make custom clothes in hours",
-        "lat": -1.9447,
-        "lon": 30.1256,
-        "image": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=600"
-    },
-    {
-        "title": "Caplaki Crafts Village",
-        "category": "Shopping & Markets",
-        "neighborhood": "Rugunga",
-        "desc": "Collection of wooden huts selling traditional Rwandan crafts and carvings.",
-        "tip": "Friendly bargaining is expected",
-        "lat": -1.9628,
-        "lon": 30.0673,
+        "neighborhood": "Nyanza",
+        "desc": "Traditional royal residence showcasing royal Inyambo long-horned cattle.",
+        "tip": "Listen to traditional praise singers tending to the cattle",
+        "lat": -2.3510,
+        "lon": 29.7505,
         "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600"
     },
     {
-        "title": "Kigali Heights",
-        "category": "Shopping & Markets",
-        "neighborhood": "Kimihurura",
-        "desc": "Modern shopping and commercial complex with dining, supermarkets, and cafes.",
-        "tip": "Located right next to the Convention Center",
-        "lat": -1.9536,
-        "lon": 30.0931,
-        "image": "https://images.unsplash.com/photo-1567449303078-57ad995bd301?w=600"
+        "title": "Nyungwe National Park",
+        "category": "Nature & Wildlife",
+        "neighborhood": "Rusizi",
+        "desc": "Ancient montane rainforest featuring chimpanzees and a high-canopy walkway.",
+        "tip": "Experience the famous Canopy Walkway",
+        "lat": -2.4883,
+        "lon": 29.2314,
+        "image": "https://images.unsplash.com/photo-1511497584788-876761c119ef?w=600"
+    },
+    # --- EASTERN PROVINCE ---
+    {
+        "title": "Akagera National Park",
+        "category": "Nature & Wildlife",
+        "neighborhood": "Kayonza",
+        "desc": "Rwanda's Big Five savanna park with lions, elephants, rhinos, and lakes.",
+        "tip": "Take a boat safari on Lake Ihema",
+        "lat": -1.8800,
+        "lon": 30.7000,
+        "image": "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=600"
     }
 ]
 
@@ -135,12 +120,39 @@ if page == "📖 Digital Guidebook":
         filtered_places = [p for p in filtered_places if search_query.lower() in p["title"].lower() or search_query.lower() in p["neighborhood"].lower()]
 
     # Map View
-    with st.expander("🗺️ View Interactive Map of Spots", expanded=True):
+    # Map View (Interactive 3D / Pan / Zoom Map)
+    # Map View (Countrywide Interactive View)
+    with st.expander("🗺️ View Countrywide Interactive Map", expanded=True):
         if filtered_places:
-            map_data = [{"lat": p["lat"], "lon": p["lon"]} for p in filtered_places]
-            st.map(map_data)
+            import pydeck as pdk
+
+            # Fixed national center for Rwanda
+            view_state = pdk.ViewState(
+                latitude=-1.94,
+                longitude=29.87,
+                zoom=8.2,
+                pitch=0,
+            )
+
+            layer = pdk.Layer(
+                "ScatterplotLayer",
+                data=filtered_places,
+                get_position="[lon, lat]",
+                get_color="[220, 38, 38, 200]",
+                get_radius=2500,  # Larger radius so pins are visible nationally
+                pickable=True,
+            )
+
+            st.pydeck_chart(
+                pdk.Deck(
+                    layers=[layer],
+                    initial_view_state=view_state,
+                    tooltip={"text": "{title}\n📍 {neighborhood}\n📁 {category}"},
+                    map_style="mapbox://styles/mapbox/streets-v11",
+                )
+            )
         else:
-            st.info("No locations on map for current filter.")
+            st.info("No locations match current search criteria.")
 
     st.write("")
 
