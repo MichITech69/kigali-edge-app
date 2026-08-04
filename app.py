@@ -124,37 +124,45 @@ if page == "📖 Digital Guidebook":
     # Map View (Countrywide Interactive View)
     # Map View (Countrywide Interactive View)
     # Map View (Countrywide Interactive View)
-    with st.expander("🗺️ View Countrywide Interactive Map", expanded=True):
+    # Map View (Rich Interactive Explorer)
+    with st.expander("🗺️ Countrywide Travel Explorer Map", expanded=True):
         if filtered_places:
-            import pydeck as pdk
+            import folium
+            from streamlit_folium import st_folium
 
-            view_state = pdk.ViewState(
-                latitude=-1.94,
-                longitude=29.87,
-                zoom=8,
-                pitch=0
-            )
+            # Create base map centered on Rwanda
+            m = folium.Map(location=[-1.94, 29.87], zoom_start=9, tiles="OpenStreetMap")
 
-            layer = pdk.Layer(
-                "ScatterplotLayer",
-                data=filtered_places,
-                get_position="[lon, lat]",
-                get_color="[220, 38, 38, 200]",
-                get_radius=3000,
-                pickable=True
-            )
+            # Add Satellite / Street view toggle
+            folium.TileLayer("cartodbpositron", name="Light Map").add_to(m)
+            folium.TileLayer(
+                tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                attr="Esri",
+                name="Satellite View"
+            ).add_to(m)
 
-            st.pydeck_chart(
-                pdk.Deck(
-                    layers=[layer],
-                    initial_view_state=view_state,
-                    tooltip={"text": "{title}\n📍 {neighborhood}\n📁 {category}"},
-                    map_style=None
-                )
-            )
+            # Add markers for all spots
+            for place in filtered_places:
+                popup_html = f"""
+                <div style="width:180px;">
+                    <img src="{place['image']}" style="width:100%; border-radius:6px; margin-bottom:5px;">
+                    <b>{place['title']}</b><br>
+                    <small>📍 {place['neighborhood']}</small><br>
+                    <small>📁 {place['category']}</small>
+                </div>
+                """
+                folium.Marker(
+                    location=[place["lat"], place["lon"]],
+                    popup=folium.Popup(popup_html, max_width=200),
+                    tooltip=place["title"],
+                    icon=folium.Icon(color="red", icon="info-sign")
+                ).add_to(m)
+
+            folium.LayerControl().add_to(m)
+            st_folium(m, width="100%", height=450, returned_objects=[])
         else:
             st.info("No locations match current search criteria.")
-
+            
     st.write("")
 
     cols = st.columns(3)
