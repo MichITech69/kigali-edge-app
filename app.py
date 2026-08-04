@@ -23,6 +23,8 @@ api_key = api_key_input or env_key
 
 # --- GUIDEBOOK DATA ---
 # --- GUIDEBOOK DATA WITH MAP COORDINATES ---
+places = # --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
+# --- GUIDEBOOK DATA WITH IMAGES & COORDINATES ---
 places = [
     {
         "title": "Kigali Genocide Memorial",
@@ -31,7 +33,8 @@ places = [
         "desc": "A deeply moving site honoring victims and offering education on peace-building.",
         "tip": "Plan for 1.5 - 2 hours",
         "lat": -1.9306,
-        "lon": 30.0606
+        "lon": 30.0606,
+        "image": "https://images.unsplash.com/photo-1572252821143-035243859812?w=600"
     },
     {
         "title": "Inema Arts Center",
@@ -40,7 +43,8 @@ places = [
         "desc": "Vibrant contemporary African art center with live painting and events.",
         "tip": "Great happy hour on Thursdays",
         "lat": -1.9365,
-        "lon": 30.0894
+        "lon": 30.0894,
+        "image": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=600"
     },
     {
         "title": "Niyo Arts Gallery",
@@ -49,7 +53,8 @@ places = [
         "desc": "Social impact art space supporting local youth through creative programs.",
         "tip": "Traditional drumming displays",
         "lat": -1.9328,
-        "lon": 30.0877
+        "lon": 30.0877,
+        "image": "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600"
     },
     {
         "title": "Question Coffee Cafe",
@@ -58,7 +63,8 @@ places = [
         "desc": "Specialty Rwandan coffee supporting women coffee farmers across the country.",
         "tip": "Try the iced pour-over",
         "lat": -1.9512,
-        "lon": 30.0965
+        "lon": 30.0965,
+        "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600"
     },
     {
         "title": "Inzora Rooftop Cafe",
@@ -67,7 +73,8 @@ places = [
         "desc": "Cozy rooftop spot with amazing sunset views over the hills of Kigali.",
         "tip": "Perfect spot for remote work",
         "lat": -1.9421,
-        "lon": 30.0883
+        "lon": 30.0883,
+        "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"
     },
     {
         "title": "Heaven Restaurant",
@@ -76,7 +83,8 @@ places = [
         "desc": "Upscale modern African cuisine with fresh organic local ingredients.",
         "tip": "Great cocktail menu",
         "lat": -1.9567,
-        "lon": 30.0642
+        "lon": 30.0642,
+        "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600"
     },
     {
         "title": "Kimironko Market",
@@ -85,7 +93,8 @@ places = [
         "desc": "The largest and most vibrant local market for fabrics, produce, and crafts.",
         "tip": "Tailors can make custom clothes in hours",
         "lat": -1.9447,
-        "lon": 30.1256
+        "lon": 30.1256,
+        "image": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=600"
     },
     {
         "title": "Caplaki Crafts Village",
@@ -94,7 +103,8 @@ places = [
         "desc": "Collection of wooden huts selling traditional Rwandan crafts and carvings.",
         "tip": "Friendly bargaining is expected",
         "lat": -1.9628,
-        "lon": 30.0673
+        "lon": 30.0673,
+        "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600"
     },
     {
         "title": "Kigali Heights",
@@ -103,7 +113,8 @@ places = [
         "desc": "Modern shopping and commercial complex with dining, supermarkets, and cafes.",
         "tip": "Located right next to the Convention Center",
         "lat": -1.9536,
-        "lon": 30.0931
+        "lon": 30.0931,
+        "image": "https://images.unsplash.com/photo-1567449303078-57ad995bd301?w=600"
     }
 ]
 
@@ -140,11 +151,13 @@ if page == "📖 Digital Guidebook":
     if not filtered_places:
         st.info("No places found matching your search.")
     else:
-        cols = st.columns(3)
+        # FIND THIS BLOCK IN YOUR CODE:
+cols = st.columns(3)
         for index, place in enumerate(filtered_places):
             col = cols[index % 3]
             with col:
                 with st.container(border=True):
+                    st.image(place["image"], use_container_width=True)
                     st.markdown(f"#### {place['title']}")
                     st.caption(f"📁 {place['category']} | 📍 {place['neighborhood']}")
                     st.write(place["desc"])
